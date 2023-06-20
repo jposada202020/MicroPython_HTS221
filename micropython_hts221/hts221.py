@@ -17,20 +17,10 @@ MicroPython Driver for the HTS221 Humidity Sensor
 from micropython import const
 from micropython_hts221.i2c_helpers import CBits, RegisterStruct
 
-try:
-    from typing import Tuple
-except ImportError:
-    pass
-
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/jposada202020/MicroPython_HTS221.git"
 
-try:
-    from typing import Union, Sequence, Tuple
-    from busio import I2C
-except ImportError:
-    pass
 
 _WHO_AM_I = const(0x0F)
 
