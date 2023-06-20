@@ -52,6 +52,10 @@ RATE_7_HZ = const(0b10)
 RATE_12_5_HZ = const(0b11)
 data_rate_values = (ONE_SHOT, RATE_1_HZ, RATE_7_HZ, RATE_12_5_HZ)
 
+BDU_DISABLED = const(0b0)
+BDU_ENABLED = const(0b1)
+block_data_update_values = (BDU_DISABLED, BDU_ENABLED)
+
 
 class HTS221:
     """Driver for the HTS221 Sensor connected over I2C.
@@ -91,6 +95,9 @@ class HTS221:
     enabled = CBits(1, _CTRL_REG1, 7)
     """Controls the power down state of the sensor. Setting to `False` will shut the sensor down"""
     _data_rate = CBits(2, _CTRL_REG1, 0)
+
+    _block_data_update = RWBits(1, _CTRL_REG1, 2)
+
     _one_shot_bit = CBits(1, _CTRL_REG2, 0)
     _temperature_status_bit = CBits(1, _STATUS_REG, 0)
     _humidity_status_bit = CBits(1, _STATUS_REG, 1)
@@ -121,6 +128,7 @@ class HTS221:
         self._boot()
         self.enabled = True
         self.data_rate = RATE_12_5_HZ
+        self._block_data_update = BDU_ENABLED
 
         t1_t0_msbs = self._t1_t0_deg_c_x8_msbits
         self.calib_temp_value_0 = self._t0_deg_c_x8_lsbyte
@@ -234,3 +242,32 @@ class HTS221:
         self._one_shot_bit = True
         while self._one_shot_bit:
             pass
+
+    @property
+    def block_data_update(self) -> str:
+        """
+        Sensor block_data_update used to inhibit the output
+        register update between the reading of the upper
+        and lower register parts. In default mode (BDU = ‘0’), the
+        lower and upper register parts are updated continuously.
+        it is recommended to set the BDU bit to ‘1’. In this way,
+        after the reading of the lower (upper) register part,
+        the content of that output register is not updated until
+        the upper (lower) part is read also.
+
+        +---------------------------------+-----------------+
+        | Mode                            | Value           |
+        +=================================+=================+
+        | :py:const:`hts221.BDU_DISABLED` | :py:const:`0b0` |
+        +---------------------------------+-----------------+
+        | :py:const:`hts221.BDU_ENABLED`  | :py:const:`0b1` |
+        +---------------------------------+-----------------+
+        """
+        values = ("BDU_DISABLED", "BDU_ENABLED")
+        return values[self._block_data_update]
+
+    @block_data_update.setter
+    def block_data_update(self, value: int) -> None:
+        if value not in block_data_update_values:
+            raise ValueError("Value must be a valid block_data_update setting")
+        self._block_data_update = value
