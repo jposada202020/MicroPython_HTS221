@@ -95,16 +95,12 @@ class HTS221:
     enabled = CBits(1, _CTRL_REG1, 7)
     """Controls the power down state of the sensor. Setting to `False` will shut the sensor down"""
     _data_rate = CBits(2, _CTRL_REG1, 0)
-
-    _block_data_update = RWBits(1, _CTRL_REG1, 2)
+    _block_data_update = CBits(1, _CTRL_REG1, 2)
 
     _one_shot_bit = CBits(1, _CTRL_REG2, 0)
-    _temperature_status_bit = CBits(1, _STATUS_REG, 0)
-    _humidity_status_bit = CBits(1, _STATUS_REG, 1)
     _raw_temperature = RegisterStruct(_TEMP_OUT_L, "<h")
     _raw_humidity = RegisterStruct(_HUMIDITY_OUT_L, "<h")
 
-    # humidity calibration consts
     _t0_deg_c_x8_lsbyte = CBits(8, _T0_DEGC_X8, 0)
     _t1_deg_c_x8_lsbyte = CBits(8, _T1_DEGC_X8, 0)
     _t1_t0_deg_c_x8_msbits = CBits(4, _T1_T0_MSB, 0)
@@ -152,10 +148,8 @@ class HTS221:
         self.calib_hum_meas_0 = self._h0_t0_out
         self.calib_hum_meas_1 = self._h1_t0_out
 
-    # This is the closest thing to a software reset. It re-loads the calibration values from flash
     def _boot(self) -> None:
         self._boot_bit = True
-        # wait for the reset to finish
         while self._boot_bit:
             pass
 
@@ -179,7 +173,7 @@ class HTS221:
 
     @property
     def temperature(self) -> float:
-        """The current temperature measurement in degrees Celsius"""
+        """The current temperature measurement in Celsius"""
 
         calibrated_value_delta = self.calibrated_value_1 - self.calib_temp_value_0
         calibrated_measurement_delta = self.calib_temp_meas_1 - self.calib_temp_meas_0
@@ -225,16 +219,6 @@ class HTS221:
         if value not in data_rate_values:
             raise ValueError("Value must be a valid data_rate setting")
         self._data_rate = value
-
-    @property
-    def humidity_data_ready(self) -> bool:
-        """Returns true if a new relative humidity measurement is available to be read"""
-        return self._humidity_status_bit
-
-    @property
-    def temperature_data_ready(self) -> bool:
-        """Returns true if a new temperature measurement is available to be read"""
-        return self._temperature_status_bit
 
     def take_measurements(self) -> None:
         """Update the value of :attr:`relative_humidity` and :attr:`temperature` by taking a single
