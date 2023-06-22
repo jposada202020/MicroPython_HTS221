@@ -19,3 +19,4 @@ while True:
             print("Humidity :{:.2f}%".format(humidity))
             print()
             time.sleep(0.5)
+        hts.data_rate = data_rate

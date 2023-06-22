@@ -20,3 +20,4 @@ while True:
                 print("Humidity :{:.2f}%".format(humidity))
                 print()
             time.sleep(0.5)
+        hts.block_data_update = block_data_update
