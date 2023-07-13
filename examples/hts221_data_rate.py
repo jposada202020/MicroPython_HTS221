@@ -15,8 +15,7 @@ while True:
     for data_rate in hts221.data_rate_values:
         print("Current Data rate setting: ", hts.data_rate)
         for _ in range(10):
-            humidity = hts.relative_humidity
-            print("Humidity :{:.2f}%".format(humidity))
+            print(f"Humidity :{hts.relative_humidity:.2f}%")
             print()
             time.sleep(0.5)
         hts.data_rate = data_rate

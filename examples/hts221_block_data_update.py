@@ -16,8 +16,7 @@ while True:
         print("Current Block data update setting: ", hts.block_data_update)
         for _ in range(10):
             while True:
-                humidity = hts.relative_humidity
-                print("Humidity :{:.2f}%".format(humidity))
+                print(f"Humidity :{hts.relative_humidity:.2f}%")
                 print()
             time.sleep(0.5)
         hts.block_data_update = block_data_update

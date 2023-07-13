@@ -10,7 +10,6 @@ i2c = I2C(1, sda=Pin(2), scl=Pin(3))  # Correct I2C pins for RP2040
 hts = hts221.HTS221(i2c)
 
 while True:
-    humidity = hts.relative_humidity
-    print("Humidity :{:.2f}%".format(humidity))
+    print(f"Humidity :{hts.relative_humidity:.2f}%")
     print()
     time.sleep(0.5)
