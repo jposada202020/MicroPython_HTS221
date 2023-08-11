@@ -1,4 +1,4 @@
-MicroPython HTS221 Library
+MicroPython HTS221 Driver
 =====================================================================
 
 

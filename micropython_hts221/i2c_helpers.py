@@ -8,7 +8,7 @@
 I2C Communications helpers
 
 
-* Author(s): Jose D. Montoya
+* Author: Jose D. Montoya
 
 Based on
 

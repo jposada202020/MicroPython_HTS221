@@ -9,7 +9,7 @@
 MicroPython Driver for the HTS221 Humidity Sensor
 
 
-* Author(s): Jose D. Montoya
+* Author: Jose D. Montoya
 
 
 """
@@ -119,7 +119,7 @@ class HTS221:
         self._address = address
 
         if self._device_id != 0xBC:
-            raise RuntimeError("Failed to find HTS221")
+            raise RuntimeError("Failed to find the HTS221 sensor")
 
         self._boot()
         self.enabled = True
@@ -232,9 +232,9 @@ class HTS221:
         """
         Sensor block_data_update used to inhibit the output
         register update between the reading of the upper
-        and lower register parts. In default mode (BDU = ‘0’), the
+        and lower register parts. In default mode (BDU = '0'), the
         lower and upper register parts are updated continuously.
-        it is recommended to set the BDU bit to ‘1’. In this way,
+        it is recommended to set the BDU bit to '1'. In this way,
         after the reading of the lower (upper) register part,
         the content of that output register is not updated until
         the upper (lower) part is read also.
